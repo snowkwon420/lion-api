@@ -11,14 +11,14 @@ async function bootstrap() {
 	const port = process.env.PORT || 8000;
 
 	// ✅ 허용할 출처 목록
-	const allowedOrigins = [
-		'http://localhost:3005', // 개발 환경
-		'https://nigonego.vercel.app', // Vercel 배포 주소
-	];
+	// const allowedOrigins = [
+	// 	'http://localhost:3005', // 개발 환경
+	// 	'https://nigonego.vercel.app', // Vercel 배포 주소
+	// ];
 
 	app.enableCors({
 		// origin을 배열로 전달하여 여러 출처를 허용합니다.
-		origin: allowedOrigins,
+		origin: true,
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
 		credentials: true,
 	});
