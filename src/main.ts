@@ -3,20 +3,27 @@ import { AppModule } from './app.module';
 import express from 'express';
 import path from 'path';
 import { ValidationPipe } from '@nestjs/common';
-import cors from 'cors';
 
-declare const module: any;
+// ... (declare const module: any;)
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	const port = process.env.PORT || 8000;
 
-	app.use(express.static(path.join(__dirname, '..', 'uploads')));
-	app.use(cors());
+	// ✅ 허용할 출처 목록
+	const allowedOrigins = [
+		'http://localhost:3005', // 개발 환경
+		'https://nigonego.vercel.app', // Vercel 배포 주소
+	];
 
-	await app.listen(port);
-	console.log(`Application is running on: ${await app.getUrl()}`);
+	app.enableCors({
+		// origin을 배열로 전달하여 여러 출처를 허용합니다.
+		origin: allowedOrigins,
+		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+		credentials: true,
+	});
 
+	// --- 이전 답변의 코드 순서 수정 내용은 그대로 적용 ---
 	app.useGlobalPipes(
 		new ValidationPipe({
 			whitelist: true,
@@ -25,10 +32,9 @@ async function bootstrap() {
 		}),
 	);
 
-	console.log(`listening on port ${port}`);
-	if (module.hot) {
-		module.hot.accept();
-		module.hot.dispose(() => app.close());
-	}
+	app.use(express.static(path.join(__dirname, '..', 'uploads')));
+
+	await app.listen(port);
+	// ... (console.log 등 나머지 코드)
 }
 bootstrap();
